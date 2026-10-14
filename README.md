@@ -20,6 +20,12 @@ Welcome to **syrevest-rice** — my personal desktop configuration for Arch Linu
 
 This repository contains the configuration files I use to customize my Linux desktop. The goal is to keep the setup clean, practical, and easy to maintain.
 
+ ## Screenshot
+ <p align='center'>
+  <img src="assets/desktop.png" alt="syrevest-rice desktop"
+ wight="100%" />
+ </p>
+
 ## Components
 
 | Component | Purpose |
