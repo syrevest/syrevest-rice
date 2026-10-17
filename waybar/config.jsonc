@@ -9,7 +9,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "custom/gpu-temp", "custom/gpu-usage", "custom/cpu-temp", "cpu", "memory", "pulseaudio", "custom/power"
+  "modules-right": ["tray", "custom/gpu-temp", "custom/gpu-usage", "custom/cpu-temp", "cpu", "memory", "pulseaudio"
   ],
 
   "hyprland/workspaces": {
@@ -55,12 +55,5 @@
     "format": "VOL {volume}%",
     "format-muted": "MUTE",
     "on-click": "pavucontrol"
-  },
-
-  "custom/power": {
-    "format": "⏻",
-    "tooltip": true,
-    "tooltip-format": "Меню питания",
-    "on-click": "~/.config/waybar/scripts/power.sh"
   }
 }
