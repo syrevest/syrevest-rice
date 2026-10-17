@@ -9,7 +9,8 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["cpu", "memory", "pulseaudio", "tray"],
+  "modules-right": ["tray", "custom/gpu-temp", "custom/gpu-usage", "custom/cpu-temp", "cpu", "memory", "pulseaudio", "custom/power"
+  ],
 
   "hyprland/workspaces": {
     "format": "{name}",
@@ -19,6 +20,24 @@
 
   "clock": {
     "format": "{:%H:%M  |  %d.%m.%Y}",
+    "tooltip": false
+  },
+
+  "custom/gpu-temp": {
+    "exec": "~/.config/waybar/scripts/gpu-temp.sh",
+    "interval": 3,
+    "tooltip": false
+  },
+
+  "custom/gpu-usage": {
+    "exec": "~/.config/waybar/scripts/gpu-usage.sh",
+    "interval": 2,
+    "tooltip": false
+  },
+
+  "custom/cpu-temp": {
+    "exec": "~/.config/waybar/scripts/cpu-temp.sh",
+    "interval": 3,
     "tooltip": false
   },
 
@@ -38,7 +57,10 @@
     "on-click": "pavucontrol"
   },
 
-  "tray": {
-    "spacing": 8
+  "custom/power": {
+    "format": "⏻",
+    "tooltip": true,
+    "tooltip-format": "Меню питания",
+    "on-click": "~/.config/waybar/scripts/power.sh"
   }
 }
