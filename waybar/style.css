@@ -18,7 +18,10 @@ window#waybar {
 #cpu,
 #memory,
 #pulseaudio,
-#tray {
+#custom-gpu-temp,
+#custom-gpu-usage,
+#custom-cpu-temp,
+#custom-power {
     padding: 0 10px;
     margin: 5px 2px;
     background: transparent;
@@ -48,4 +51,14 @@ window#waybar {
 
 #pulseaudio.muted {
     color: #999999;
+}
+
+#custom-power {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+#custom-power:hover {
+    background: #eeeeee;
+    border-radius: 7px;
 }
