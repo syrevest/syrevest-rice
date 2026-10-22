@@ -37,7 +37,7 @@ hl.monitor({
 local terminal    = "kitty"
 local fileManager = "nemo"
 local browser = "vivaldi"
-local menu        = "rofi -show drun -show-icons -icon-theme Papirus"
+local menu        = "rofi -show drun -show-icons -icon-theme Papirus -theme ~/.config/rofi/syrevest.rasi"
 
 
 -------------------
