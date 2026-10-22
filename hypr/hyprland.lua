@@ -50,7 +50,6 @@ local menu        = "rofi -show drun -show-icons -icon-theme Papirus"
 -- Or execute your favorite apps at launch like this:
 
 hl.on("hyprland.start", function () 
-hl.exec_cmd("nm-applet")
 hl.exec_cmd("waybar")
 hl.exec_cmd("awww-daemon")
 end)
@@ -62,8 +61,9 @@ end)
 
 -- See https://wiki.hypr.land/Configuring/Advanced-and-Cool/Environment-variables/
 
-hl.env("QCURSOR_THEME", "Bibata-Modern-Ice")
-hl.env("QCURSOR_SIZE","24")
+hl.env("QT_QPA_PLATFORMTHEME", "qt6ct")
+hl.env("GTK_CURSOR_THEME", "Bibata-Modern-Ice")
+hl.env("GTK_CURSOR_SIZE","24")
 hl.env("XCURSOR_THEME", "Bibata-Modern-Ice")
 hl.env("XCURSOR_SIZE", "24")
 hl.env("HYPRCURSOR_THEME", "Bibata-Modern-Ice")
@@ -237,7 +237,9 @@ hl.config({
 
         follow_mouse = 1,
 
-        sensitivity = 0, -- -1.0 - 1.0, 0 means no modification.
+        sensitivity = 0.0, -- -1.0 - 1.0, 0 means no modification.
+
+        accel_profile = flat,
 
         touchpad = {
             natural_scroll = false,
