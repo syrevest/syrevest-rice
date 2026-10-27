@@ -18,16 +18,20 @@ INSTALL_WALLPAPER=true
 
 PACKAGES=(
     hyprland
-    waybar
-    kitty
-    rofi
-    nemo
-    papirus-icon-theme
-    ttf-jetbrains-mono-nerd
     pipewire
+    pipewire-audio
+    pipewire-alsa
+    pipewire-pulse
+    pipewire-jack
     wireplumber
-    pavucontrol
+    kitty
+    nemo
+    waybar
+    rofi
+    ttf-jetbrains-mono-nerd
+    papirus-icon-theme
     awww
+    pavucontrol
 )
 
 # ---------- Helpers ----------
