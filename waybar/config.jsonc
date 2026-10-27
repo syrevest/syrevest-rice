@@ -9,7 +9,7 @@
 
   "modules-left": ["hyprland/workspaces"],
   "modules-center": ["clock"],
-  "modules-right": ["tray", "custom/gpu-temp", "custom/gpu-usage", "custom/cpu-temp", "cpu", "memory", "pulseaudio"
+  "modules-right": ["tray", "memory", "cpu", "custom/cpu-temp", "custom/gpu-usage", "custom/gpu-temp", "hyprland/language","pulseaudio"
   ],
 
   "hyprland/workspaces": {
@@ -19,7 +19,7 @@
   },
 
   "clock": {
-    "format": "{:%H:%M  |  %d.%m.%Y}",
+    "format": "{:%I:%M %p | %d.%m.%Y}",
     "tooltip": false
   },
 
@@ -55,5 +55,11 @@
     "format": "VOL {volume}%",
     "format-muted": "MUTE",
     "on-click": "pavucontrol"
+  },
+
+  "hyprland/language": {
+      "format": "{}",
+      "format-en": "EN",
+      "format-ru": "RU"
   }
 }

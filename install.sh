@@ -3,69 +3,89 @@
 
 set -Eeuo pipefail
 
-# Pure White installer
+# syrevest-rice installer
 # Arch Linux + Hyprland
 
-readonly SCRIPT_NAME="syrevest's rice"
+readonly SCRIPT_NAME="syrevest-rice"
 readonly REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}"
-readonly BACKUP_DIR="$DATA_DIR/pure-white-backups/$(date +%Y%m%d-%H%M%S)"
+readonly BACKUP_DIR="$DATA_DIR/syrevest-rice-backups/$(date +%Y%m%d-%H%M%S)"
 
 DRY_RUN=false
 INSTALL_PACKAGES=true
 INSTALL_WALLPAPER=true
 
 PACKAGES=(
-    base-devel
-    imv
-    mpv
-    noto-fonts-emoji
-    qt5-wayland
-    qt6-wayland
-    qt6ct
-    efibootmgr
-    vim
-    vi
-    reflector
-    git
-    hyprland
-    kitty
-    pipewire
-    pipewire-audio
-    pipewire-alsa
-    pipewire-pulse
-    pipewire-jack
-    lib32-libpulse
-    lib32-pipewire-jack
-    wireplumber
-    nemo
-    waybar
-    rofi
-    mako
-    ttf-jetbrains-mono-nerd
-    papirus-icon-theme
-    awww
-    pavucontrol
-    xdg-desktop-portal
-    xdg-desktop-portal-gtk
-    xdg-desktop-portal-hyprland
-    wine
-    vivaldi
-    vesktop
-    alsa-utils
-    easyeffects
-    cups
-    cups-filters
-    blesh
-    bash-completion
-    fastfetch
-    btop
-    obs-studio
-    steam
-    telegram-desktop
-    winetricks
-    
+       # Build tools
+       git
+       github-cli
+
+       # Hyprland
+       hyprland
+       xdg-desktop-portal
+       xdg-desktop-portal-gtk
+       xdg-desktop-portal-hyprland
+       qt5-wayland
+       qt6-wayland
+       qt6ct
+
+       # Panel, launcher and notifications
+       waybar
+       rofi
+       mako
+
+       # Terminal
+       kitty
+       bash-completion
+       blesh
+       fastfetch
+       btop
+       vim
+
+       # Fonts and icons
+       ttf-jetbrains-mono-nerd
+       papirus-icon-theme
+       noto-fonts-emoji
+
+       # Audio
+       pipewire
+       pipewire-audio
+       pipewire-alsa
+       pipewire-pulse
+       pipewire-jack
+       wireplumber
+       lib32-libpulse
+       lib32-pipewire-jack
+       alsa-utils
+       pavucontrol
+       easyeffects
+
+       # Wallpaper and screenshots
+       awww
+       grim
+       imv
+
+       # Network
+       networkmanager
+
+       # Printing
+       cups
+       cups-filters
+       hplip
+
+       # Gaming
+       steam
+       wine
+       winetricks
+
+       # Applications
+       vivaldi
+       vesktop
+       telegram-desktop
+       obs-studio
+       flatpak
+       happ-desktop-bin
 )
 
 # ---------- Helpers ----------
@@ -85,7 +105,7 @@ die() {
 
 usage() {
     cat <<'EOF'
-Pure White installer
+syrevest-rice installer
 
 Usage:
   ./install.sh [options]
@@ -106,6 +126,86 @@ on_error() {
 }
 
 trap on_error ERR
+
+
+configure_blesh() {
+    local bashrc="$HOME/.bashrc"
+    local marker="# >>> syrevest-rice: ble.sh >>>"
+
+    if [[ ! -f /usr/share/blesh/ble.sh ]]; then
+        log "ble.sh not found; skipping Bash suggestions."
+        return 0
+    fi
+
+    touch "$bashrc"
+
+    if grep -Fq "$marker" "$bashrc"; then
+        log "ble.sh is already configured."
+        return 0
+    fi
+
+    # Back up .bashrc to the rice backup directory.
+    mkdir -p "$BACKUP_DIR"
+    cp -a -- "$bashrc" "$BACKUP_DIR/bashrc"
+
+    cat >> "$bashrc" <<'EOF'
+
+# >>> syrevest-rice: ble.sh >>>
+if [[ $- == *i* ]] && [[ -f /usr/share/blesh/ble.sh ]]; then
+    source /usr/share/blesh/ble.sh
+fi
+# <<< syrevest-rice: ble.sh <<<
+EOF
+
+    log "Configured ble.sh for interactive Bash."
+}
+
+ensure_yay() {
+    if [[ $EUID -eq 0 ]]; then
+        die "Do not run this installer as root."
+    fi
+
+    if command -v yay >/dev/null 2>&1; then
+        log "yay is already installed."
+        return 0
+    fi
+
+    command -v sudo >/dev/null 2>&1 ||
+        die "sudo is required to install yay."
+
+    log "Installing prerequisites for yay..."
+
+    if ! sudo pacman -S --needed base-devel git; then
+        die "Failed to install prerequisites for yay."
+    fi
+
+    local build_dir
+
+    if ! build_dir="$(mktemp -d)"; then
+        die "Failed to create a temporary directory."
+    fi
+
+    log "Downloading yay build files from the AUR..."
+
+    if ! git clone https://aur.archlinux.org/yay.git "$build_dir/yay"; then
+        rm -rf -- "$build_dir"
+        die "Failed to download yay."
+    fi
+
+    log "Building and installing yay..."
+
+    if ! (cd "$build_dir/yay" && makepkg -si); then
+        rm -rf -- "$build_dir"
+        die "Failed to build or install yay."
+    fi
+
+    rm -rf -- "$build_dir"
+
+    command -v yay >/dev/null 2>&1 ||
+        die "yay installation could not be verified."
+
+    log "yay installed successfully."
+}
 
 # ---------- Arguments ----------
 
@@ -171,15 +271,13 @@ fi
 # ---------- Package checks ----------
 
 if [[ "$INSTALL_PACKAGES" == true ]]; then
-    command -v yay >/dev/null 2>&1 ||
-            die "yay is required. Install yay first."
-
-    log "Checking package availability through yay..."
-
-    if ! yay -Si "${PACKAGES[@]}" >/dev/null 2>&1; then
-	    warn "Some packages may be unavailable."
-	    warn "review package names before continuing."
+    if command -v yay >/dev/null 2>&1; then
+        log "yay found."
+    else
+        log "yay will be installed before the other packages."
     fi
+
+    log "Package availability will be checked during dependency resolution."
 fi
 
 # ---------- Plan ----------
@@ -209,7 +307,7 @@ if [[ "$DRY_RUN" == true ]]; then
         "$CONFIG_DIR/rofi/syrevest.rasi"
 
     if [[ "$INSTALL_WALLPAPER" == true ]]; then
-        printf '  %s\n' "$DATA_DIR/pure-white/wallpapers/syrevest.jpg"
+        printf '  %s\n' "$DATA_DIR/wallpapers/syrevest.jpg"
     fi
 
     log "Dry-run finished. No changes were made."
@@ -249,7 +347,9 @@ log "Backup created at: $BACKUP_DIR"
 # ---------- Package installation ----------
 
 if [[ "$INSTALL_PACKAGES" == true ]]; then
-    log "Installing packages using yay..."
+    ensure_yay
+
+    log "Installing packages through yay..."
     yay -S --needed "${PACKAGES[@]}"
 fi
 
@@ -295,7 +395,7 @@ copy_file \
 # ---------- Wallpaper ----------
 
 if [[ "$INSTALL_WALLPAPER" == true ]]; then
-    wallpaper_dir="$DATA_DIR/pure-white/wallpapers"
+    wallpaper_dir="$DATA_DIR/wallpapers"
     mkdir -p "$wallpaper_dir"
     install -m 644 \
         "$REPO_DIR/wallpapers/syrevest.jpg" \
@@ -303,11 +403,15 @@ if [[ "$INSTALL_WALLPAPER" == true ]]; then
     log "Installed wallpaper: $wallpaper_dir/syrevest.jpg"
 fi
 
+# ---------- Bash suggestions ----------
+
+configure_blesh
+
 # ---------- Summary ----------
 
 cat <<EOF
 
-Pure White installation finished.
+syrevest-rice installation finished.
 
 Backup:
   $BACKUP_DIR
@@ -321,7 +425,7 @@ Installed configs:
 EOF
 
 if [[ "$INSTALL_WALLPAPER" == true ]]; then
-    printf 'Wallpaper:\n  %s\n\n' "$DATA_DIR/pure-white/wallpapers/syrevest.jpg"
+    printf 'Wallpaper:\n  %s\n\n' "$DATA_DIR/wallpapers/syrevest.jpg"
 fi
 
 warn "Review the Hyprland monitor name, browser command, and wallpaper daemon before restarting Hyprland."

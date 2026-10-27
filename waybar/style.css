@@ -20,17 +20,11 @@ window#waybar {
 #pulseaudio,
 #custom-gpu-temp,
 #custom-gpu-usage,
-#custom-cpu-temp,
-#custom-power {
-    padding: 0 10px;
-    margin: 5px 2px;
-    background: transparent;
-    color: #171717;
-}
+#custom-cpu-temp
 
 #workspaces button {
     padding: 0 8px;
-    color: #777777;
+    color: #171717;
     background: transparent;
     border-radius: 7px;
 }
@@ -53,12 +47,11 @@ window#waybar {
     color: #999999;
 }
 
-#custom-power {
-    font-size: 17px;
-    font-weight: 700;
+#tray {
+    padding: 0 8px;
+    margin: 5px 2px;
 }
 
-#custom-power:hover {
-    background: #eeeeee;
-    border-radius: 7px;
+#tray image {
+    margin: 0 5px;
 }

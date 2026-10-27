@@ -4,7 +4,7 @@
 }
 
 window {
-    width: 600px;
+    width: 700px;
     padding: 20px;
     background-color: #ffffff;
     border: 1px solid;
