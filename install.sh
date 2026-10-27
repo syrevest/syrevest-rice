@@ -27,7 +27,7 @@ PACKAGES=(
     pipewire
     wireplumber
     pavucontrol
-    network-manager-applet
+    awww
 )
 
 # ---------- Helpers ----------
