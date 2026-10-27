@@ -6,7 +6,7 @@ set -Eeuo pipefail
 # Pure White installer
 # Arch Linux + Hyprland
 
-readonly SCRIPT_NAME="Pure White"
+readonly SCRIPT_NAME="syrevest's rice"
 readonly REPO_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly CONFIG_DIR="${XDG_CONFIG_HOME:-$HOME/.config}"
 readonly DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}"
@@ -17,21 +17,60 @@ INSTALL_PACKAGES=true
 INSTALL_WALLPAPER=true
 
 PACKAGES=(
+    linux
+    linux-firmware
+    base
+    base-devel
+    networkmanager
+    grub
+    imv
+    mpv
+    noto-fonts-emoji
+    qt5-wayland
+    qt6-wayland
+    qt6ct
+    efibootmgr
+    vim
+    vi
+    reflector
+    git
     hyprland
+    kitty
     pipewire
     pipewire-audio
     pipewire-alsa
     pipewire-pulse
     pipewire-jack
+    lib32-libpulse
+    lib32-pipewire-jack
     wireplumber
-    kitty
     nemo
     waybar
     rofi
+    mako
     ttf-jetbrains-mono-nerd
     papirus-icon-theme
     awww
     pavucontrol
+    xdg-desktop-portal
+    xdg-desktop-portal-gtk
+    xdg-desktop-portal-hyprland
+    wine
+    vivaldi
+    vesktop
+    alsa-utils
+    easyeffects
+    cups
+    cups-filters
+    blesh
+    bash-completion
+    fastfetch
+    btop
+    obs-studio
+    steam
+    telegram-desktop
+    winetricks
+    
 )
 
 # ---------- Helpers ----------
