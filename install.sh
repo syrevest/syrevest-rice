@@ -172,7 +172,7 @@ if [[ "$DRY_RUN" == true ]]; then
         "$CONFIG_DIR/waybar/style.css" \
         "$CONFIG_DIR/waybar/scripts/" \
         "$CONFIG_DIR/kitty/kitty.conf" \
-        "$CONFIG_DIR/rofi/themes/syrevest.rasi"
+        "$CONFIG_DIR/rofi/syrevest.rasi"
 
     if [[ "$INSTALL_WALLPAPER" == true ]]; then
         printf '  %s\n' "$DATA_DIR/pure-white/wallpapers/syrevest.jpg"
@@ -256,7 +256,7 @@ copy_file \
 
 copy_file \
     "$REPO_DIR/rofi/syrevest.rasi" \
-    "$CONFIG_DIR/rofi/themes/syrevest.rasi"
+    "$CONFIG_DIR/rofi/syrevest.rasi"
 
 # ---------- Wallpaper ----------
 
