@@ -282,7 +282,7 @@ Installed configs:
   $CONFIG_DIR/hypr/hyprland.lua
   $CONFIG_DIR/waybar/
   $CONFIG_DIR/kitty/kitty.conf
-  $CONFIG_DIR/rofi/themes/syrevest.rasi
+  $CONFIG_DIR/rofi/syrevest.rasi
 
 EOF
 
@@ -300,7 +300,7 @@ installed_files=(
     "$CONFIG_DIR/waybar/config.jsonc"
     "$CONFIG_DIR/waybar/style.css"
     "$CONFIG_DIR/kitty/kitty.conf"
-    "$CONFIG_DIR/rofi/themes/syrevest.rasi"
+    "$CONFIG_DIR/rofi/syrevest.rasi"
 )
 
 for file in "${installed_files[@]}"; do
