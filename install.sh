@@ -17,12 +17,7 @@ INSTALL_PACKAGES=true
 INSTALL_WALLPAPER=true
 
 PACKAGES=(
-    linux
-    linux-firmware
-    base
     base-devel
-    networkmanager
-    grub
     imv
     mpv
     noto-fonts-emoji
@@ -176,18 +171,14 @@ fi
 # ---------- Package checks ----------
 
 if [[ "$INSTALL_PACKAGES" == true ]]; then
-    missing_packages=()
+    command -v yay >/dev/null 2>&1 ||
+            die "yay is required. Install yay first."
 
-    for package in "${PACKAGES[@]}"; do
-        if ! pacman -Si "$package" >/dev/null 2>&1; then
-            missing_packages+=("$package")
-        fi
-    done
+    log "Checking package availability through yay..."
 
-    if ((${#missing_packages[@]} > 0)); then
-        warn "These packages were not found in enabled official repositories:"
-        printf '  - %s\n' "${missing_packages[@]}"
-        die "Review the package names or install unavailable packages separately."
+    if ! yay -Si "${PACKAGES[@]}" >/dev/null 2>&1; then
+	    warn "Some packages may be unavailable."
+	    warn "review package names before continuing."
     fi
 fi
 
@@ -258,8 +249,8 @@ log "Backup created at: $BACKUP_DIR"
 # ---------- Package installation ----------
 
 if [[ "$INSTALL_PACKAGES" == true ]]; then
-    log "Installing packages using pacman..."
-    sudo pacman -S --needed "${PACKAGES[@]}"
+    log "Installing packages using yay..."
+    yay -S --needed "${PACKAGES[@]}"
 fi
 
 # ---------- Config installation ----------
