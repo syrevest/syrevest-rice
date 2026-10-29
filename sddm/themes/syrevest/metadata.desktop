@@ -1,0 +1,15 @@
+[SddmGreeterTheme]
+Name=syrevest
+Description=Pure White minimal SDDM theme
+Author=syrevest
+Copyright=2026
+License=MIT
+Type=sddm-theme
+Version=1.0
+Website=
+Screenshot=
+MainScript=Main.qml
+ConfigFile=theme.conf
+TranslationsDirectory=translations
+Theme-Id=syrevest
+Theme-API=2.0

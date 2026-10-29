@@ -21,6 +21,9 @@ PACKAGES=(
        git
        github-cli
 
+       # Display manager
+       sddm
+
        # Hyprland
        hyprland
        xdg-desktop-portal
@@ -126,6 +129,48 @@ on_error() {
 }
 
 trap on_error ERR
+
+
+configure_sddm() {
+    if ! pacman -Qq sddm >/dev/null 2>&1; then
+        warn "SDDM is not installed; skipping its theme."
+        return 0
+    fi
+
+    local theme_source="$REPO_DIR/sddm/themes/syrevest"
+    local theme_target="/usr/share/sddm/themes/syrevest"
+    local conf_source="$REPO_DIR/sddm/10-syrevest-theme.conf"
+    local conf_target="/etc/sddm.conf.d/10-syrevest-theme.conf"
+    local backup_theme="$BACKUP_DIR/sddm/themes/syrevest"
+    local backup_conf="$BACKUP_DIR/sddm/conf.d/10-syrevest-theme.conf"
+
+    # Back up the existing theme, if present.
+    if [[ -d "$theme_target" ]]; then
+        mkdir -p "$(dirname -- "$backup_theme")"
+        cp -a -- "$theme_target" "$backup_theme"
+        log "Backed up SDDM theme to: $backup_theme"
+    fi
+
+    # Back up the existing theme selection, if present.
+    if [[ -e "$conf_target" || -L "$conf_target" ]]; then
+        mkdir -p "$(dirname -- "$backup_conf")"
+        cp -a -- "$conf_target" "$backup_conf"
+        log "Backed up SDDM settings to: $backup_conf"
+    fi
+
+    # Install the theme files into the system directory.
+    sudo install -d "$theme_target"
+    for file in Main.qml metadata.desktop theme.conf syrevest.jpg; do
+        sudo install -m 644 -- "$theme_source/$file" "$theme_target/$file"
+    done
+
+    # Install the configuration that selects the syrevest theme.
+    sudo install -d /etc/sddm.conf.d
+    sudo install -m 644 -- "$conf_source" "$conf_target"
+
+    log "Installed SDDM theme: $theme_target"
+    log "Installed SDDM settings: $conf_target"
+}
 
 
 configure_blesh() {
@@ -277,6 +322,11 @@ required_files=(
     "kitty/kitty.conf"
     "rofi/syrevest.rasi"
     "bash/blerc"
+    "sddm/10-syrevest-theme.conf"
+    "sddm/themes/syrevest/Main.qml"
+    "sddm/themes/syrevest/metadata.desktop"
+    "sddm/themes/syrevest/theme.conf"
+    "sddm/themes/syrevest/syrevest.jpg"
 )
 
 for file in "${required_files[@]}"; do
@@ -334,6 +384,8 @@ if [[ "$DRY_RUN" == true ]]; then
         "$CONFIG_DIR/waybar/scripts/" \
         "$CONFIG_DIR/kitty/kitty.conf" \
         "$CONFIG_DIR/rofi/syrevest.rasi" \
+        "/usr/share/sddm/themes/syrevest/" \
+        "/etc/sddm.conf.d/10-syrevest-theme.conf" \
         "$HOME/.blerc" \
         "$HOME/.bashrc"
 
@@ -433,6 +485,10 @@ if [[ "$INSTALL_WALLPAPER" == true ]]; then
         "$wallpaper_dir/syrevest.jpg"
     log "Installed wallpaper: $wallpaper_dir/syrevest.jpg"
 fi
+
+# ---------- SDDM theme ----------
+
+configure_sddm
 
 # ---------- Bash suggestions ----------
 
