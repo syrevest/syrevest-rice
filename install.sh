@@ -130,25 +130,50 @@ trap on_error ERR
 
 configure_blesh() {
     local bashrc="$HOME/.bashrc"
-    local marker="# >>> syrevest-rice: ble.sh >>>"
+    local blerc_source="$REPO_DIR/bash/blerc"
+    local blerc_target="$HOME/.blerc"
+    local tmp
 
     if [[ ! -f /usr/share/blesh/ble.sh ]]; then
         log "ble.sh not found; skipping Bash suggestions."
         return 0
     fi
 
-    touch "$bashrc"
+    [[ -f "$blerc_source" ]] ||
+        die "Required file is missing: $blerc_source"
 
-    if grep -Fq "$marker" "$bashrc"; then
-        log "ble.sh is already configured."
-        return 0
+    mkdir -p "$BACKUP_DIR"
+
+    # Back up existing files before changing them.
+    if [[ -f "$bashrc" ]]; then
+        cp -a -- "$bashrc" "$BACKUP_DIR/bashrc"
+        log "Backed up: $bashrc"
+    else
+        touch "$bashrc"
     fi
 
-    # Back up .bashrc to the rice backup directory.
-    mkdir -p "$BACKUP_DIR"
-    cp -a -- "$bashrc" "$BACKUP_DIR/bashrc"
+    if [[ -e "$blerc_target" || -L "$blerc_target" ]]; then
+        cp -a -- "$blerc_target" "$BACKUP_DIR/blerc"
+        log "Backed up: $blerc_target"
+    fi
 
-    cat >> "$bashrc" <<'EOF'
+    # Install the project's ble.sh settings.
+    install -m 644 -- "$blerc_source" "$blerc_target"
+    log "Installed: $blerc_target"
+
+    # Remove the old manual source line or a previously managed block.
+    tmp="$(mktemp "${bashrc}.XXXXXX")"
+
+    awk '
+        /^# >>> syrevest-rice: ble\.sh >>>$/ { skip=1; next }
+        /^# <<< syrevest-rice: ble\.sh <<</ { skip=0; next }
+        skip { next }
+        /^# ble\.sh$/ { next }
+        /^[[:space:]]*\[\[ \$- == \*i\* \]\] && source \/usr\/share\/blesh\/ble\.sh[[:space:]]*$/ { next }
+        { print }
+    ' "$bashrc" > "$tmp"
+
+    cat >> "$tmp" <<'EOF'
 
 # >>> syrevest-rice: ble.sh >>>
 if [[ $- == *i* ]] && [[ -f /usr/share/blesh/ble.sh ]]; then
@@ -157,7 +182,10 @@ fi
 # <<< syrevest-rice: ble.sh <<<
 EOF
 
-    log "Configured ble.sh for interactive Bash."
+    chmod --reference="$bashrc" "$tmp" 2>/dev/null || chmod 644 "$tmp"
+    mv -- "$tmp" "$bashrc"
+
+    log "Configured ble.sh and removed duplicate source lines."
 }
 
 ensure_yay() {
@@ -248,6 +276,7 @@ required_files=(
     "waybar/style.css"
     "kitty/kitty.conf"
     "rofi/syrevest.rasi"
+    "bash/blerc"
 )
 
 for file in "${required_files[@]}"; do
@@ -304,7 +333,9 @@ if [[ "$DRY_RUN" == true ]]; then
         "$CONFIG_DIR/waybar/style.css" \
         "$CONFIG_DIR/waybar/scripts/" \
         "$CONFIG_DIR/kitty/kitty.conf" \
-        "$CONFIG_DIR/rofi/syrevest.rasi"
+        "$CONFIG_DIR/rofi/syrevest.rasi" \
+        "$HOME/.blerc" \
+        "$HOME/.bashrc"
 
     if [[ "$INSTALL_WALLPAPER" == true ]]; then
         printf '  %s\n' "$DATA_DIR/wallpapers/syrevest.jpg"

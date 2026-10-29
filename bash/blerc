@@ -1,0 +1,15 @@
+# syrevest-rice: ble.sh configuration
+# This file is installed as ~/.blerc.
+# It is loaded by ble.sh during initialization.
+
+# Enable automatic command completion.
+bleopt complete_auto_complete=1
+
+# Use command history for automatic completion.
+bleopt complete_auto_history=1
+
+# Delay automatic completion by 1 unit as defined by ble.sh.
+bleopt complete_auto_delay=1
+
+# Keep completion candidates aligned without wrapping.
+bleopt complete_menu_style=align-nowrap
