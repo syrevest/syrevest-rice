@@ -77,12 +77,11 @@ PACKAGES=(
        cups-filters
        hplip
 
-       # Gaming
+       # Applications
        steam
        wine
        winetricks
-
-       # Applications
+       elyprismlauncher
        vivaldi
        vesktop
        telegram-desktop
