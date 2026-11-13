@@ -65,11 +65,11 @@ git clone https://github.com/syrevest/syrevest-rice.git
 cd syrevest-rice
 ```
 
-### 3. Review the configuration
+### 2. Review the configuration
 
 Inspect the files before installing them. Check file paths, keybindings, commands, and dependencies. The Hyprland configuration in this repository is named `hyprland.lua`; verify how your particular setup loads Lua configuration before copying it into place.
 
-### 4. Apply the configuration
+### 3. Apply the configuration
 
 Copy only the files you have reviewed and adapted for your system. Do not overwrite your working configuration blindly.
 
