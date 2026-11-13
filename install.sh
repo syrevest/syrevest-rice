@@ -20,6 +20,7 @@ PACKAGES=(
        # Build tools
        git
        github-cli
+       qbittorrent
 
        # Display manager
        sddm
