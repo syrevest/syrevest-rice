@@ -65,21 +65,6 @@ git clone https://github.com/syrevest/syrevest-rice.git
 cd syrevest-rice
 ```
 
-### 2. Back up existing configurations
-
-```bash
-mkdir -p ~/.config/rice-backup
-```
-
-If the destination files already exist, back them up before replacing anything:
-
-```bash
-cp -a ~/.config/hypr ~/.config/rice-backup/hypr
-cp -a ~/.config/rofi ~/.config/rice-backup/rofi
-```
-
-Skip a backup command if its source directory does not exist.
-
 ### 3. Review the configuration
 
 Inspect the files before installing them. Check file paths, keybindings, commands, and dependencies. The Hyprland configuration in this repository is named `hyprland.lua`; verify how your particular setup loads Lua configuration before copying it into place.
