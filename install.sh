@@ -20,8 +20,6 @@ PACKAGES=(
        # Build tools
        git
        github-cli
-       qbittorrent
-       ventoy
 
        # Display manager
        sddm
