@@ -21,6 +21,7 @@ PACKAGES=(
        git
        github-cli
        qbittorrent
+       ventoy
 
        # Display manager
        sddm
